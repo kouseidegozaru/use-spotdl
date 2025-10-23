@@ -6,8 +6,8 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('C:/Users/takahashi/Desktop/spdl/venv/Lib/site-packages/pykakasi/data', 'pykakasi/data'),
-        ('C:/Users/takahashi/Desktop/spdl/venv/Lib/site-packages/ytmusicapi/', 'ytmusicapi')
+        ('C:/Users/gguan/OneDrive/デスクトップ/ss/use-spotdl/venv/Lib/site-packages/pykakasi/data', 'pykakasi/data'),
+        ('C:/Users/gguan/OneDrive/デスクトップ/ss/use-spotdl/venv/Lib/site-packages/ytmusicapi/', 'ytmusicapi')
         ],
     hiddenimports=[],
     hookspath=[],
