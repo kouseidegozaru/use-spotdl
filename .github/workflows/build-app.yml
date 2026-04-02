@@ -41,3 +41,10 @@ jobs:
           name: music-downloader-windows-${{ steps.spotdl_version.outputs.version }}
           path: dist/music-downloader.exe
           retention-days: 30
+
+      - name: Create or update Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.spotdl_version.outputs.version }}
+          name: music-downloader v${{ steps.spotdl_version.outputs.version }}
+          files: dist/music-downloader.exe
