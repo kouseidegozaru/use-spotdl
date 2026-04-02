@@ -1,0 +1,43 @@
+name: Build spotdl App
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade spotdl pykakasi ytmusicapi
+          pip install pyinstaller
+
+      - name: Get spotdl version
+        id: spotdl_version
+        run: |
+          $version = python -c "import spotdl; print(spotdl.__version__)"
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Build with PyInstaller
+        run: pyinstaller music-downloader.spec
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: music-downloader-windows-${{ steps.spotdl_version.outputs.version }}
+          path: dist/music-downloader.exe
+          retention-days: 30
