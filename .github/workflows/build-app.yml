@@ -1,14 +1,11 @@
 name: Build spotdl App
-
 on:
   schedule:
     - cron: '0 2 * * 1'
   workflow_dispatch:
-
 jobs:
   build-windows:
     runs-on: windows-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -32,10 +29,27 @@ jobs:
           $version = python -c "import spotdl; print(spotdl.__version__)"
           echo "version=$version" >> $env:GITHUB_OUTPUT
 
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          $tag = "v${{ steps.spotdl_version.outputs.version }}"
+          $response = gh release view $tag 2>&1
+          if ($LASTEXITCODE -eq 0) {
+            echo "exists=true" >> $env:GITHUB_OUTPUT
+            Write-Host "Release $tag already exists. Skipping build."
+          } else {
+            echo "exists=false" >> $env:GITHUB_OUTPUT
+            Write-Host "Release $tag not found. Proceeding with build."
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build with PyInstaller
+        if: steps.check_release.outputs.exists == 'false'
         run: pyinstaller music-downloader.spec
 
       - name: Upload artifact
+        if: steps.check_release.outputs.exists == 'false'
         uses: actions/upload-artifact@v6
         with:
           name: music-downloader-windows-${{ steps.spotdl_version.outputs.version }}
@@ -43,6 +57,7 @@ jobs:
           retention-days: 30
 
       - name: Create or update Release
+        if: steps.check_release.outputs.exists == 'false'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.spotdl_version.outputs.version }}
