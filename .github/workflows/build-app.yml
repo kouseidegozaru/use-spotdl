@@ -3,6 +3,11 @@ on:
   schedule:
     - cron: '0 2 * * 1'
   workflow_dispatch:
+    inputs:
+        force_build:
+          description: '既存のリリースがあっても強制的にビルド・更新する'
+          type: boolean
+          default: false
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -46,11 +51,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build with PyInstaller
-        if: steps.check_release.outputs.exists == 'false'
+        if: steps.check_release.outputs.exists == 'false' || github.event.inputs.force_build == 'true'
         run: pyinstaller music-downloader.spec
 
       - name: Upload artifact
-        if: steps.check_release.outputs.exists == 'false'
+        if: steps.check_release.outputs.exists == 'false' || github.event.inputs.force_build == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: music-downloader-windows-${{ steps.spotdl_version.outputs.version }}
@@ -58,7 +63,7 @@ jobs:
           retention-days: 30
 
       - name: Create or update Release
-        if: steps.check_release.outputs.exists == 'false'
+        if: steps.check_release.outputs.exists == 'false' || github.event.inputs.force_build == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.spotdl_version.outputs.version }}
