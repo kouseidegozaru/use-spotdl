@@ -41,6 +41,7 @@ jobs:
             echo "exists=false" >> $env:GITHUB_OUTPUT
             Write-Host "Release $tag not found. Proceeding with build."
           }
+          exit 0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
