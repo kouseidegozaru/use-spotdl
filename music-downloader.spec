@@ -1,14 +1,15 @@
 # -*- mode: python ; coding: utf-8 -*-
-
+import sysconfig
+sp = sysconfig.get_paths()['purelib']
 
 a = Analysis(
     ['music-downloader.py'],
     pathex=[],
     binaries=[],
     datas=[
-        ('C:/Users/gguan/OneDrive/デスクトップ/ss/use-spotdl/venv/Lib/site-packages/pykakasi/data', 'pykakasi/data'),
-        ('C:/Users/gguan/OneDrive/デスクトップ/ss/use-spotdl/venv/Lib/site-packages/ytmusicapi/', 'ytmusicapi')
-        ],
+        (f'{sp}/pykakasi/data', 'pykakasi/data'),
+        (f'{sp}/ytmusicapi', 'ytmusicapi'),
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
