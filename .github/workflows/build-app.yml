@@ -31,7 +31,7 @@ jobs:
       - name: Get yt_dlp version
         id: yt_dlp_version
         run: |
-          $version = python -c "import yt_dlp; print(yt_dlp.__version__)"
+          $version = python -c "from yt_dlp.version import __version__; print(__version__)"
           echo "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Check if release already exists
